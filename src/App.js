@@ -10,13 +10,10 @@ import {
 } from 'lucide-react';
 
 // --- 1. ESTRUCTURA BASE DE LA PÁGINA ---
-/* Este componente sirve como "molde" para todas las páginas. 
-  Contiene la barra de navegación superior (logo y menús).
-*/
 const PageLayout = ({ children, title, showNav = true }) => (
   <div className="min-h-screen bg-[#F8FAFC] font-['Manrope']">
     {showNav && (
-      <nav className="relative z-[100] w-full max-w-7xl mx-auto px-6 py-6 mt-4 overflow-hidden flex justify-between items-center shadow-2xl shadow-slate-200/50 rounded-[0.5rem]">
+      <nav className="relative z-[100] w-full max-w-7xl mx-auto px-6 py-6 mt-4 overflow-hidden flex justify-between items-center shadow-2xl shadow-slate-200/50 rounded-[0.5rem] bg-white">
         <div className="absolute inset-0 z-[-1]">
           <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/80 to-transparent"></div>
         </div>
@@ -24,7 +21,6 @@ const PageLayout = ({ children, title, showNav = true }) => (
         <div className="flex items-center gap-10">
           <div className="flex items-center gap-3">
             <Link to="/" className="bg-white p-1 rounded-[0.5rem] border-slate-100 block">
-              {/* Espacio para el logo de la empresa */}
               <img 
                 src={process.env.PUBLIC_URL + '/Logo_Onesta.png'} 
                 alt="Logo Empresa" 
@@ -41,8 +37,7 @@ const PageLayout = ({ children, title, showNav = true }) => (
         </div>
 
         <div className="flex items-center gap-4">
-          {/* Solo muestra "Cerrar Sesión" si no estamos en la portada */}
-          {window.location.hash !== '#/' && (
+          {window.location.hash !== '#/' && window.location.hash !== '' && (
             <Link to="/" className="text-[10px] font-bold text-slate-400 hover:text-red-500 uppercase tracking-[0.2em] transition-colors">
               Cerrar Sesión
             </Link>
@@ -58,23 +53,18 @@ const PageLayout = ({ children, title, showNav = true }) => (
 );
 
 // --- 2. PÁGINA DE INICIO Y ACCESO (LOGIN) ---
-/* Es lo primero que ve el usuario. Permite elegir si entrar como 
-  Cliente o como Administrador para ver las diferentes funciones.
-*/
 const LandingPage = () => {
   const [role, setRole] = useState('user');
   const navigate = useNavigate();
 
   const handleLogin = (e) => {
     e.preventDefault();
-    // Dependiendo del rol elegido, nos manda a un panel distinto
     role === 'admin' ? navigate('/admin-dashboard') : navigate('/dashboard');
   };
 
   return (
     <PageLayout showNav={true}>
       <div className="relative flex flex-col min-h-[80vh] justify-center">
-        {/* Adornos visuales de fondo */}
         <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-red-500 rounded-full opacity-5 blur-3xl -z-10"></div>
         <div className="absolute bottom-[-10%] left-[-5%] w-[400px] h-[400px] bg-teal-400 rounded-full opacity-10 blur-3xl -z-10"></div>
 
@@ -108,7 +98,6 @@ const LandingPage = () => {
                   <h2 className="text-xl font-black text-slate-800 tracking-tight uppercase">Portal de Gestión</h2>
                   <p className="text-slate-400 text-[10px] font-bold uppercase tracking-[0.2em] mt-2">Bienvenido</p>
                 </div>
-                {/* Selector de tipo de usuario */}
                 <div className="flex bg-slate-50 p-1.5 rounded-[0.7rem] mb-8 border border-slate-100">
                   <button onClick={() => setRole('user')} className={`flex-1 py-3 text-[10px] font-black rounded-[0.5rem] transition-all ${role === 'user' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400'}`}>CLIENTE</button>
                   <button onClick={() => setRole('admin')} className={`flex-1 py-3 text-[10px] font-black rounded-[0.5rem] transition-all ${role === 'admin' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400'}`}>ADMIN</button>
@@ -131,12 +120,8 @@ const LandingPage = () => {
 };
 
 // --- 3. PANEL PRINCIPAL DEL CLIENTE ---
-/* Muestra un resumen de los servicios contratados y 
-  botones de acceso rápido a las diferentes áreas.
-*/
 const Dashboard = () => {
   const navigate = useNavigate();
-  // Listado ejemplo de pólizas del cliente
   const polizas = [
     { id: 'GM-99021', ramo: 'Gastos Médicos Mayores', status: 'Activa', color: 'text-green-600 bg-green-50 border-green-100' },
     { id: 'FL-44012', ramo: 'Flotilla Empresarial', status: 'En Pago', color: 'text-blue-600 bg-blue-50 border-blue-100' },
@@ -145,7 +130,6 @@ const Dashboard = () => {
   return (
     <PageLayout title="Mi Resumen">
       <div className="max-w-4xl mx-auto">
-        {/* Menú de Iconos: Accesos directos a los módulos */}
         <div className="bg-white p-8 rounded-[0.75rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 mb-8 grid grid-cols-2 md:grid-cols-6 gap-2">
           {[
             { icon: Stethoscope, label: 'Gastos Médicos', path: '/gastos-medicos' },
@@ -170,7 +154,6 @@ const Dashboard = () => {
           ))}
         </div>
 
-        {/* Listado detallado de pólizas vigentes */}
         <div className="bg-white rounded-[0.5rem] border border-slate-200 shadow-sm overflow-hidden">
           <div className="p-5 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
             <div className="flex items-center gap-2">
@@ -202,9 +185,6 @@ const Dashboard = () => {
 };
 
 // --- 4. PANEL DEL ADMINISTRADOR ---
-/* Muestra estadísticas globales de la plataforma. 
-  Solo accesible para usuarios con perfil de Admin.
-*/
 const AdminDashboard = () => (
   <PageLayout title="Consola Administrativa">
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
@@ -230,22 +210,17 @@ const AdminDashboard = () => (
 );
 
 // --- 5. MÓDULO DE GESTIÓN DE FLOTILLAS ---
-/* Permite al cliente cotizar nuevos vehículos y ver 
-  el listado de unidades que ya están aseguradas.
-*/
 const FlotillaPage = () => {
   const [pasoActual, setPasoActual] = useState(1);
   const [seleccion, setSeleccion] = useState({ año: '', marca: '' });
   const navigate = useNavigate();
 
-  // Opciones de cobertura para la cotización rápida
   const coberturas = [
     { v: '3%', l: 'Deducible Daños' }, { v: '10%', l: 'Deducible Robo' }, { v: '2 mil', l: 'Responsabilidad Civil' },
     { v: '500 m', l: 'Gastos Médicos' }, { v: '3 mil', l: 'RC Exceso' }, { v: 'Cubierta 1', l: 'No Deducible' },
     { v: 'Cubierta 2', l: 'Asistencia Vial' }, { v: 'Cubierta 3', l: 'RC Ocupantes' }, { v: 'Cubierta 4', l: 'Muerte Conductor' },
   ];
 
-  // Listado ejemplo de vehículos asegurados
   const unidades = [
     { id: 1, modelo: 'Toyota Hilux 2023', placa: 'ABC-123', status: 'ASEGURADO' },
     { id: 2, modelo: 'Nissan NP300 2022', placa: 'XYZ-987', status: 'ASEGURADO' },
@@ -259,7 +234,6 @@ const FlotillaPage = () => {
 
       <div className="grid grid-cols-12 gap-10 items-stretch">
         <div className="col-span-12 lg:col-span-8 space-y-10">
-          {/* Proceso de Cotización por pasos */}
           <section className="bg-white rounded-[0.5rem] border border-slate-200 shadow-sm p-12 relative flex flex-col h-[700px]">
             <div className="flex justify-between items-start mb-12">
               <div>
@@ -269,7 +243,6 @@ const FlotillaPage = () => {
               <button className="bg-red-600 text-white px-10 py-3.5 rounded-[0.5rem] font-black text-xs uppercase tracking-widest shadow-lg shadow-red-100">Seleccionar</button>
             </div>
 
-            {/* Indicador visual de en qué paso estamos */}
             <div className="w-full max-w-4xl mx-auto flex items-center justify-between mb-16 bg-slate-50 p-6 rounded-[0.5rem] border border-slate-100">
               {[
                 { n: 1, t: 'Conoce' }, { n: 2, t: 'Selecciona' }, { n: 3, t: 'Revisa' }, { n: 4, t: 'Contrata' }
@@ -288,9 +261,8 @@ const FlotillaPage = () => {
             </div>
 
             <div className="flex-1 min-h-0">
-              {/* Paso 1: Mostrar coberturas */}
               {pasoActual === 1 && (
-                <div className="grid grid-cols-3 gap-3 h-full animate-in fade-in">
+                <div className="grid grid-cols-3 gap-3 h-full">
                   {coberturas.map((c, i) => (
                     <div key={i} onClick={() => setPasoActual(2)} className="group cursor-pointer bg-white border border-slate-100 rounded-[0.5rem] p-4 flex flex-col items-center justify-center text-center hover:border-red-500 transition-all border-dashed">
                       <p className="text-2xl font-black text-slate-900 group-hover:text-red-600">{c.v}</p>
@@ -300,16 +272,15 @@ const FlotillaPage = () => {
                 </div>
               )}
 
-              {/* Paso 2: Elegir año del vehículo */}
               {pasoActual === 2 && (
-                <div className="max-w-xl mx-auto space-y-8 animate-in slide-in-from-right-4">
+                <div className="max-w-xl mx-auto space-y-8">
                   <div className="grid grid-cols-3 md:grid-cols-5 gap-3">
                     {['2026', '2025', '2024', '2023', '2022', '2021', '2020', '2019', '2018', 'Otros'].map(y => (
                       <button key={y} onClick={() => setSeleccion({ ...seleccion, año: y })} className={`py-4 rounded-[0.5rem] font-black border transition-all text-sm ${seleccion.año === y ? 'bg-red-600 text-white border-red-600' : 'bg-slate-50 text-slate-600 border-slate-100 hover:border-red-600'}`}>{y}</button>
                     ))}
                   </div>
                   {seleccion.año && (
-                    <div className="max-w-md mx-auto space-y-4 animate-in fade-in">
+                    <div className="max-w-md mx-auto space-y-4">
                       <input type="text" placeholder="Código Postal" className="w-full p-5 bg-slate-50 rounded-[0.5rem] border border-slate-200 font-bold text-sm outline-none focus:border-red-600" />
                       <button onClick={() => setPasoActual(3)} className="w-full py-5 bg-red-600 text-white rounded-[0.5rem] font-black text-xs uppercase tracking-[0.2em] shadow-xl">Obtener Cotización</button>
                     </div>
@@ -317,7 +288,6 @@ const FlotillaPage = () => {
                 </div>
               )}
 
-              {/* Paso 3: Animación de carga */}
               {pasoActual === 3 && (
                 <div className="text-center py-10">
                   <RefreshCw className="mx-auto text-red-600 mb-8 animate-spin" size={48} />
@@ -326,9 +296,8 @@ const FlotillaPage = () => {
                 </div>
               )}
 
-              {/* Paso 4: Resultado final */}
               {pasoActual === 4 && (
-                <div className="text-center py-10 animate-in zoom-in-95">
+                <div className="text-center py-10">
                   <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-8">
                     <CheckCircle2 size={40} />
                   </div>
@@ -347,7 +316,6 @@ const FlotillaPage = () => {
             </div>
           </section>
 
-          {/* Listado de unidades aseguradas en la empresa */}
           <section className="bg-white rounded-[0.5rem] border border-slate-200 shadow-sm overflow-hidden">
             <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
               <h3 className="font-black text-slate-800 uppercase text-[11px] tracking-widest">Unidades Aseguradas</h3>
@@ -372,7 +340,6 @@ const FlotillaPage = () => {
           </section>
         </div>
 
-        {/* Ventana de Chat de Soporte */}
         <div className="col-span-12 lg:col-span-4 h-full">
           <div className="bg-white rounded-[0.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-slate-200 h-[700px] flex flex-col overflow-hidden">
             <div className="bg-white p-10 border-b border-slate-100 flex flex-col items-center text-center">
@@ -403,7 +370,6 @@ const FlotillaPage = () => {
   );
 };
 
-// --- COMPONENTE PARA SECCIONES TODAVÍA NO CREADAS ---
 const GenericSection = ({ name, icon: Icon }) => (
   <PageLayout title={name}>
     <button onClick={() => window.history.back()} className="flex items-center gap-2 text-red-600 font-black mb-10 text-[11px] uppercase tracking-widest">
@@ -419,10 +385,6 @@ const GenericSection = ({ name, icon: Icon }) => (
   </PageLayout>
 );
 
-// --- CONFIGURACIÓN DE RUTAS DE LA APP ---
-/* Aquí definimos qué componente se muestra según la dirección web 
-  en la que se encuentre el usuario.
-*/
 export default function App() {
   return (
     <Router>
@@ -436,7 +398,6 @@ export default function App() {
         <Route path="/gastos-menores" element={<GenericSection name="Gastos Médicos Menores" icon={User} />} />
         <Route path="/contactos" element={<GenericSection name="Contactos" icon={Phone} />} />
         <Route path="/club" element={<GenericSection name="Club Onesta" icon={Star} />} />
-        {/* Si el usuario escribe una dirección que no existe, lo manda al inicio */}
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Router>
