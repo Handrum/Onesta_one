@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/Handrum/Onesta_one/static/css/main.e33b2ccb.css",
-    "main.js": "/Handrum/Onesta_one/static/js/main.52d33e6f.js",
-    "static/js/453.bd6a2c90.chunk.js": "/Handrum/Onesta_one/static/js/453.bd6a2c90.chunk.js",
-    "index.html": "/Handrum/Onesta_one/index.html",
-    "main.e33b2ccb.css.map": "/Handrum/Onesta_one/static/css/main.e33b2ccb.css.map",
-    "main.52d33e6f.js.map": "/Handrum/Onesta_one/static/js/main.52d33e6f.js.map",
-    "453.bd6a2c90.chunk.js.map": "/Handrum/Onesta_one/static/js/453.bd6a2c90.chunk.js.map"
+    "main.css": "/Onesta_one/static/css/main.e33b2ccb.css",
+    "main.js": "/Onesta_one/static/js/main.788c2a4c.js",
+    "static/js/453.bd6a2c90.chunk.js": "/Onesta_one/static/js/453.bd6a2c90.chunk.js",
+    "index.html": "/Onesta_one/index.html",
+    "main.e33b2ccb.css.map": "/Onesta_one/static/css/main.e33b2ccb.css.map",
+    "main.788c2a4c.js.map": "/Onesta_one/static/js/main.788c2a4c.js.map",
+    "453.bd6a2c90.chunk.js.map": "/Onesta_one/static/js/453.bd6a2c90.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.e33b2ccb.css",
-    "static/js/main.52d33e6f.js"
+    "static/js/main.788c2a4c.js"
   ]
 }
