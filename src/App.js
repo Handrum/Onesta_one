@@ -237,10 +237,10 @@ const FlotillaPage = () => {
           <section className="bg-white rounded-[0.5rem] border border-slate-200 shadow-sm p-12 relative flex flex-col h-[700px]">
             <div className="flex justify-between items-start mb-12">
               <div>
-                <h2 className="text-4xl font-black text-slate-900 tracking-tighter">Cotiza aquí auto</h2>
-                <p className="text-slate-400 text-base mt-2 font-medium">Alta inmediata</p>
+                <h2 className="text-4xl font-black text-slate-900 tracking-tighter">Cotiza aquí tu auto</h2>
+                <p className="text-slate-400 text-[10px]">Conoce las coberturas incluidas en la póliza colectiva da clic sobre cada una para ver mas detalle</p>
               </div>
-              <button className="bg-red-600 text-white px-10 py-3.5 rounded-[0.5rem] font-black text-xs uppercase tracking-widest shadow-lg shadow-red-100">Seleccionar</button>
+              <p className="text-slate-600 px-9 py-3.5 rounded-[0.3rem] font-black text-xs uppercase tracking-widest shadow-lg shadow-red-100">Elige uno</p>
             </div>
 
             <div className="w-full max-w-4xl mx-auto flex items-center justify-between mb-16 bg-slate-50 p-6 rounded-[0.5rem] border border-slate-100">
@@ -358,7 +358,7 @@ const FlotillaPage = () => {
               ))}
             </div>
             <div className="p-6 bg-white border-t border-slate-100 flex gap-3">
-              <input type="text" placeholder="Escribe tu duda..." className="flex-1 bg-slate-50 p-4 rounded-[0.5rem] text-sm font-bold outline-none border border-slate-100 focus:bg-white focus:border-red-600 transition-all" />
+              <input type="text" placeholder="Cómo te podemos ayudar...?" className="flex-1 bg-slate-50 p-4 rounded-[0.5rem] text-sm font-bold outline-none border border-slate-100 focus:bg-white focus:border-red-600 transition-all" />
               <button className="bg-blue-600 text-white p-4 rounded-[0.5rem] font-black shadow-lg shadow-blue-100">
                 <Send size={18} />
               </button>
