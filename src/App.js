@@ -63,59 +63,151 @@ const LandingPage = () => {
   };
 
   return (
-    <PageLayout showNav={true}>
-      <div className="relative flex flex-col min-h-[80vh] justify-center">
-        <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-red-500 rounded-full opacity-5 blur-3xl -z-10"></div>
-        <div className="absolute bottom-[-10%] left-[-5%] w-[400px] h-[400px] bg-teal-400 rounded-full opacity-10 blur-3xl -z-10"></div>
+    <div className="min-h-screen bg-[#F8FAFC] font-['Manrope']">
 
-        <div className="relative z-10 w-full max-w-6xl mx-auto">
-          <div className="grid grid-cols-12 gap-8 items-center py-12">
-            <div className="col-span-12 lg:col-span-7 flex flex-col justify-center items-center lg:items-start text-center lg:text-left">
-              <div className="w-full mb-6">
-                <img 
-                  src={process.env.PUBLIC_URL + '/Logo_Onesta.png'} 
-                  alt="Onesta One" 
-                  className="w-full max-w-[400px] md:max-w-[600px] lg:max-w-[800px] h-auto object-contain mx-auto lg:ml-[-40px]" 
-                />
-              </div>
-              <div className="space-y-4 px-4 lg:px-0">
-                <h6 className="text-xl md:text-2xl font-black text-slate-900 leading-tight tracking-tighter uppercase">La plataforma para asegurar flotilla empresarial</h6>
-                <p className="text-slate-500 text-lg font-medium max-w-xl leading-relaxed">Gestiona pólizas, unidades y siniestros de tu empresa en un único lugar.</p>
-              </div>
-              <div className="flex flex-col md:flex-row items-center gap-4 pt-8">
-                <div className="flex -space-x-3">
-                  {[1, 2, 3].map(i => (
-                    <div key={i} className="w-10 h-10 rounded-full border-4 border-white bg-slate-200 flex items-center justify-center text-[9px] font-bold text-slate-500 shadow-sm">U{i}</div>
-                  ))}
-                </div>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Más de <span className="text-slate-800">500 corporativos</span> confían</p>
-              </div>
+      {/* ── NAVBAR: oculto en móvil, visible desde md ── */}
+      <nav className="hidden md:flex relative z-[100] w-full max-w-7xl mx-auto px-6 py-6 mt-4 overflow-hidden justify-between items-center shadow-2xl shadow-slate-200/50 rounded-[0.5rem] bg-white">
+        <div className="absolute inset-0 z-[-1]">
+          <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/80 to-transparent"></div>
+        </div>
+        <div className="flex items-center gap-10">
+          <div className="flex items-center gap-3">
+            <Link to="/" className="bg-white p-1 rounded-[0.5rem] border-slate-100 block">
+              <img 
+                src={process.env.PUBLIC_URL + '/Logo_Onesta.png'} 
+                alt="Logo Empresa" 
+                className="h-10 w-auto object-contain" 
+              />
+            </Link>
+          </div>
+          <div className="hidden md:flex gap-8 text-[11px] font-black uppercase tracking-[0.15em] text-slate-600">
+            <span className="text-red-600 border-red-600 pb-1 cursor-pointer">Seguros</span>
+            <span className="hover:text-slate-900 cursor-pointer transition-colors">Reclamos</span>
+            <span className="hover:text-slate-900 cursor-pointer transition-colors">Contacto</span>
+          </div>
+        </div>
+      </nav>
+
+      <main className="max-w-7xl mx-auto px-6 py-12">
+
+        {/* ════════════════════════════════════════
+            VISTA MÓVIL: solo logo + formulario
+            visible en <md, oculto en ≥md
+        ════════════════════════════════════════ */}
+        <div className="flex md:hidden flex-col items-center justify-center min-h-[85vh] gap-8">
+          {/* Logo centrado */}
+          <img 
+            src={process.env.PUBLIC_URL + '/Logo_Onesta.png'} 
+            alt="Onesta One" 
+            className="w-[220px] h-auto object-contain"
+          />
+
+          {/* Formulario de login */}
+          <div className="bg-white p-8 rounded-[1rem] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.1)] border border-slate-100 w-full max-w-[380px]">
+            <div className="text-center mb-8">
+              <h2 className="text-xl font-black text-slate-800 tracking-tight uppercase">Portal de Gestión</h2>
+              <p className="text-slate-400 text-[10px] font-bold uppercase tracking-[0.2em] mt-2">Bienvenido</p>
             </div>
+            <div className="flex bg-slate-50 p-1.5 rounded-[0.7rem] mb-8 border border-slate-100">
+              <button 
+                onClick={() => setRole('user')} 
+                className={`flex-1 py-3 text-[10px] font-black rounded-[0.5rem] transition-all ${role === 'user' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400'}`}
+              >
+                CLIENTE
+              </button>
+              <button 
+                onClick={() => setRole('admin')} 
+                className={`flex-1 py-3 text-[10px] font-black rounded-[0.5rem] transition-all ${role === 'admin' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400'}`}
+              >
+                ADMIN
+              </button>
+            </div>
+            <form onSubmit={handleLogin} className="space-y-4">
+              <input 
+                type="text" 
+                placeholder="Usuario" 
+                className="w-full p-4 bg-slate-50 border border-slate-200 rounded-[0.7rem] outline-none text-sm font-semibold focus:border-red-500 transition-all" 
+                required 
+              />
+              <input 
+                type="password" 
+                placeholder="Contraseña" 
+                className="w-full p-4 bg-slate-50 border border-slate-200 rounded-[0.7rem] outline-none text-sm font-semibold focus:border-red-500 transition-all" 
+                required 
+              />
+              <button 
+                type="submit" 
+                className="w-full bg-slate-900 text-white py-5 rounded-[0.7rem] font-black hover:bg-red-600 transition-all mt-4 text-[11px] tracking-[0.2em] uppercase shadow-lg shadow-slate-200"
+              >
+                Entrar al Dashboard
+              </button>
+            </form>
+          </div>
 
-            <div className="col-span-12 lg:col-span-5 flex justify-center lg:justify-end mt-10 lg:mt-0">
-              <div className="bg-white p-8 rounded-[1rem] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.1)] border border-slate-100 w-full max-w-[400px]">
-                <div className="text-center mb-8">
-                  <h2 className="text-xl font-black text-slate-800 tracking-tight uppercase">Portal de Gestión</h2>
-                  <p className="text-slate-400 text-[10px] font-bold uppercase tracking-[0.2em] mt-2">Bienvenido</p>
+          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest text-center pb-6">
+            © 2026 Onesta One. <span className="font-medium normal-case opacity-60">*Sujeto a póliza colectiva.</span>
+          </p>
+        </div>
+
+        {/* ════════════════════════════════════════
+            VISTA DESKTOP: layout original completo
+            oculto en <md, visible en ≥md
+        ════════════════════════════════════════ */}
+        <div className="hidden md:block relative">
+          <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-red-500 rounded-full opacity-5 blur-3xl -z-10"></div>
+          <div className="absolute bottom-[-10%] left-[-5%] w-[400px] h-[400px] bg-teal-400 rounded-full opacity-10 blur-3xl -z-10"></div>
+
+          <div className="relative z-10 w-full max-w-6xl mx-auto">
+            <div className="grid grid-cols-12 gap-8 items-center py-12">
+              <div className="col-span-12 lg:col-span-7 flex flex-col justify-center items-center lg:items-start text-center lg:text-left">
+                <div className="w-full mb-6">
+                  <img 
+                    src={process.env.PUBLIC_URL + '/Logo_Onesta.png'} 
+                    alt="Onesta One" 
+                    className="w-full max-w-[400px] md:max-w-[600px] lg:max-w-[800px] h-auto object-contain mx-auto lg:ml-[-40px]" 
+                  />
                 </div>
-                <div className="flex bg-slate-50 p-1.5 rounded-[0.7rem] mb-8 border border-slate-100">
-                  <button onClick={() => setRole('user')} className={`flex-1 py-3 text-[10px] font-black rounded-[0.5rem] transition-all ${role === 'user' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400'}`}>CLIENTE</button>
-                  <button onClick={() => setRole('admin')} className={`flex-1 py-3 text-[10px] font-black rounded-[0.5rem] transition-all ${role === 'admin' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400'}`}>ADMIN</button>
+                <div className="space-y-4 px-4 lg:px-0">
+                  <h6 className="text-xl md:text-2xl font-black text-slate-900 leading-tight tracking-tighter uppercase">La plataforma para asegurar flotilla empresarial</h6>
+                  <p className="text-slate-500 text-lg font-medium max-w-xl leading-relaxed">Gestiona pólizas, unidades y siniestros de tu empresa en un único lugar.</p>
                 </div>
-                <form onSubmit={handleLogin} className="space-y-4">
-                  <input type="text" placeholder="Usuario" className="w-full p-4 bg-slate-50 border border-slate-200 rounded-[0.7rem] outline-none text-sm font-semibold focus:border-red-500 transition-all" required />
-                  <input type="password" placeholder="Contraseña" className="w-full p-4 bg-slate-50 border border-slate-200 rounded-[0.7rem] outline-none text-sm font-semibold focus:border-red-500 transition-all" required />
-                  <button type="submit" className="w-full bg-slate-900 text-white py-5 rounded-[0.7rem] font-black hover:bg-red-600 transition-all mt-4 text-[11px] tracking-[0.2em] uppercase shadow-lg shadow-slate-200">Entrar al Dashboard</button>
-                </form>
+                <div className="flex flex-col md:flex-row items-center gap-4 pt-8">
+                  <div className="flex -space-x-3">
+                    {[1, 2, 3].map(i => (
+                      <div key={i} className="w-10 h-10 rounded-full border-4 border-white bg-slate-200 flex items-center justify-center text-[9px] font-bold text-slate-500 shadow-sm">U{i}</div>
+                    ))}
+                  </div>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Más de <span className="text-slate-800">500 corporativos</span> confían</p>
+                </div>
+              </div>
+
+              <div className="col-span-12 lg:col-span-5 flex justify-center lg:justify-end mt-10 lg:mt-0">
+                <div className="bg-white p-8 rounded-[1rem] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.1)] border border-slate-100 w-full max-w-[400px]">
+                  <div className="text-center mb-8">
+                    <h2 className="text-xl font-black text-slate-800 tracking-tight uppercase">Portal de Gestión</h2>
+                    <p className="text-slate-400 text-[10px] font-bold uppercase tracking-[0.2em] mt-2">Bienvenido</p>
+                  </div>
+                  <div className="flex bg-slate-50 p-1.5 rounded-[0.7rem] mb-8 border border-slate-100">
+                    <button onClick={() => setRole('user')} className={`flex-1 py-3 text-[10px] font-black rounded-[0.5rem] transition-all ${role === 'user' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400'}`}>CLIENTE</button>
+                    <button onClick={() => setRole('admin')} className={`flex-1 py-3 text-[10px] font-black rounded-[0.5rem] transition-all ${role === 'admin' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400'}`}>ADMIN</button>
+                  </div>
+                  <form onSubmit={handleLogin} className="space-y-4">
+                    <input type="text" placeholder="Usuario" className="w-full p-4 bg-slate-50 border border-slate-200 rounded-[0.7rem] outline-none text-sm font-semibold focus:border-red-500 transition-all" required />
+                    <input type="password" placeholder="Contraseña" className="w-full p-4 bg-slate-50 border border-slate-200 rounded-[0.7rem] outline-none text-sm font-semibold focus:border-red-500 transition-all" required />
+                    <button type="submit" className="w-full bg-slate-900 text-white py-5 rounded-[0.7rem] font-black hover:bg-red-600 transition-all mt-4 text-[11px] tracking-[0.2em] uppercase shadow-lg shadow-slate-200">Entrar al Dashboard</button>
+                  </form>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <footer className="w-full max-w-7xl mx-auto px-6 mt-36 pb-10 border-t border-slate-200 pt-8 flex justify-center">
+
+          <footer className="w-full max-w-7xl mx-auto px-6 mt-36 pb-10 border-t border-slate-200 pt-8 flex justify-center">
             <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest text-center">© 2026 Onesta One. <span className="font-medium normal-case ml-2 opacity-60">*Sujeto a póliza colectiva.</span></p>
-        </footer>
-      </div>
-    </PageLayout>
+          </footer>
+        </div>
+
+      </main>
+    </div>
   );
 };
 
