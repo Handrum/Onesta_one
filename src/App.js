@@ -257,11 +257,7 @@ const Dashboard = () => {
   );
 };
 
-// Panel del administrador con navegación detallada y visualización en escala de grises
-// ========================================================
-// SECCIÓN: PANEL DEL ADMINISTRADOR RESPONSIVE
-// ========================================================
-
+// Panel del administrador con navegación detallada y visualización
 const AdminModuleMaster = ({ nombre, icono: Icon }) => {
   const navigate = useNavigate();
   return (
