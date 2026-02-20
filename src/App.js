@@ -3,7 +3,7 @@ import { HashRouter as Router, Routes, Route, useNavigate, Link, Navigate } from
 import {
   ArrowLeft, Car,
   Stethoscope, RefreshCw, User, Phone, Star,
-  Download, CheckCircle2, Users, TrendingUp, LayoutDashboard, ClipboardList, Send, Menu, MessageCircle, X,
+  Download, CheckCircle2, Users, TrendingUp, ClipboardList, Send, Menu, MessageCircle, X,
   MoreVertical, FileText, Share2, Eye, Printer
 } from 'lucide-react';
 
@@ -212,7 +212,7 @@ const Dashboard = () => {
     { id: 'FL-44012', ramo: 'Flotilla Empresarial',   status: 'En Pago',  color: 'text-blue-600 bg-blue-50 border-blue-100'   },
   ];
   return (
-    <PageLayout title="Mi Resumen">
+    <PageLayout title="Resumen Pólizas">
       <div className="max-w-4xl mx-auto">
         <div className="bg-white p-8 rounded-[0.75rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 mb-8 grid grid-cols-2 md:grid-cols-6 gap-2">
           {[
@@ -257,30 +257,190 @@ const Dashboard = () => {
   );
 };
 
-// Panel del administrador con métricas generales de la operación
-const AdminDashboard = () => (
-  <PageLayout title="Consola Administrativa">
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-      {[
-        { label: 'Clientes Activos', val: '2,450', icon: Users,        color: 'text-blue-600'    },
-        { label: 'Primas Totales',   val: '$1.2M', icon: TrendingUp,    color: 'text-emerald-600' },
-        { label: 'Siniestros Hoy',   val: '14',    icon: ClipboardList, color: 'text-orange-600'  },
-      ].map((card, i) => (
-        <div key={i} className="bg-white p-10 rounded-[0.5rem] border border-slate-200 shadow-sm">
-          <card.icon size={28} className={`${card.color} mb-8`} />
-          <p className="text-slate-400 text-[11px] font-black uppercase tracking-widest mb-2">{card.label}</p>
-          <p className="text-4xl font-black text-slate-900 tracking-tighter">{card.val}</p>
+// Panel del administrador con navegación detallada y visualización en escala de grises
+const AdminModuleMaster = ({ nombre, icono: Icon }) => {
+  const navigate = useNavigate();
+  return (
+    <PageLayout title={`Consola Onesta > ${nombre}`}>
+      <div className="max-w-6xl mx-auto pb-20">
+        
+        {/* Cabecera del Módulo */}
+        <div className="bg-white p-10 rounded-[0.5rem] border border-slate-200 mb-6 flex flex-col md:flex-row items-center justify-between shadow-sm">
+          <div className="flex items-center gap-6">
+            <div className="w-16 h-16 bg-slate-900 text-white rounded-[0.5rem] flex items-center justify-center">
+              <Icon size={32} strokeWidth={1.5} />
+            </div>
+            <div>
+              <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter">{nombre}</h2>
+              <p className="text-slate-400 text-[9px] font-black uppercase tracking-widest">Módulo de gestión administrativa v1.0</p>
+            </div>
+          </div>
+          <button onClick={() => navigate('/admin-dashboard')} className="mt-6 md:mt-0 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest bg-slate-50 px-6 py-3 rounded-[0.4rem] hover:bg-red-600 hover:text-white transition-all">
+            <ArrowLeft size={16} /> Volver a Consola
+          </button>
         </div>
-      ))}
-    </div>
-    <div className="bg-slate-900 p-20 rounded-[0.5rem] text-white text-center border border-slate-800 shadow-2xl relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600 rounded-full opacity-10 blur-[100px]"></div>
-      <LayoutDashboard size={56} className="mx-auto mb-8 text-blue-400 opacity-50" />
-      <h3 className="text-3xl font-black mb-4 tracking-tight">Reporte Maestro de Operaciones</h3>
-      <p className="text-slate-400 text-base max-w-md mx-auto leading-relaxed">Visualización de datos críticos del ecosistema en tiempo real.</p>
-    </div>
-  </PageLayout>
-);
+
+        {/* Tabla de Gestión del Módulo */}
+        <div className="bg-white rounded-[0.5rem] border border-slate-200 overflow-hidden shadow-sm">
+          <div className="p-6 border-b border-slate-100 flex justify-between items-center">
+             <h3 className="text-[10px] font-black uppercase text-slate-500 tracking-widest">Registros de {nombre}</h3>
+             <button className="bg-slate-900 text-white px-4 py-2 rounded-[0.3rem] text-[9px] font-black uppercase tracking-widest hover:bg-slate-800 transition-colors">Nuevo Registro +</button>
+          </div>
+          <table className="w-full text-left">
+            <thead className="bg-slate-50 text-[9px] font-black text-slate-400 uppercase">
+              <tr>
+                <th className="px-8 py-4">ID Ref</th>
+                <th className="px-8 py-4">Descripción</th>
+                <th className="px-8 py-4">Estado</th>
+                <th className="px-8 py-4">Fecha</th>
+                <th className="px-8 py-4 text-right">Acción</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {[1, 2, 3, 4, 5].map((item) => (
+                <tr key={item} className="hover:bg-slate-50 transition-colors">
+                  <td className="px-8 py-5 text-[11px] font-black text-slate-900">#00{item}842</td>
+                  <td className="px-8 py-5 text-[11px] font-bold text-slate-600 uppercase">Gestión Operativa - {nombre}</td>
+                  <td className="px-8 py-5">
+                    <span className="bg-emerald-50 text-emerald-600 text-[9px] font-black px-3 py-1 rounded-full">ACTIVO</span>
+                  </td>
+                  <td className="px-8 py-5 text-[11px] text-slate-400">20/02/2026</td>
+                  <td className="px-8 py-5 text-right">
+                    <button className="text-slate-300 hover:text-slate-900"><MoreVertical size={16}/></button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </PageLayout>
+  );
+};
+
+const AdminDashboard = () => {
+  const [menuAbierto, setMenuAbierto] = useState(false);
+  const [catExpandida, setCatExpandida] = useState(null);
+  const navigate = useNavigate();
+
+  const métricas = [
+    { label: 'Clientes Activos', val: '2,450', icon: Users },
+    { label: 'Primas Totales', val: '$1.2M', icon: TrendingUp },
+    { label: 'Siniestros Hoy', val: '14', icon: ClipboardList },
+  ];
+
+  const menuEstructura = [
+    { 
+      id: 'autos', label: 'Autos', 
+      sub: [
+        {l:'ADMINISTRACIÓN OFICIAL', p:'/admin/autos-adm'}, 
+        {l:'RENOVACIÓN FLOTILLA', p:'/admin/autos-renov'}
+      ] 
+    },
+    { 
+      id: 'danos', label: 'Daños', 
+      sub: [
+        {l:'PORTAL EMPRESARIAL', p:'/admin/danos-emp'}, 
+        {l:'PORTAL CONDOMINIOS', p:'/admin/danos-cond'}
+      ] 
+    },
+    { 
+      id: 'salud', label: 'Salud', 
+      sub: [
+        {l:'ADMINISTRACIÓN PÓLIZA GMM', p:'/admin/salud-adm'}, 
+        {l:'TRÁMITES SINIESTROS', p:'/admin/salud-sin'}, 
+        {l:'TRÁMITES ALTAS/BAJAS', p:'/admin/salud-mov'}, 
+        {l:'SINIESTRALIDAD GMM', p:'/admin/salud-rep'}
+      ] 
+    },
+    { 
+      id: 'finanzas', label: 'Finanzas', 
+      sub: [
+        {l:'PROVEEDORES', p:'/admin/fin-prov'}, 
+        {l:'CONTRATISTAS', p:'/admin/fin-cont'}
+      ] 
+    }
+  ];
+
+  return (
+    <PageLayout title="Consola Administrativa">
+      <div className="max-w-6xl mx-auto space-y-6 pb-20">
+        
+        {/* Header con Menú Hamburguesa */}
+        <div className="flex justify-between items-center bg-white p-4 rounded-[0.5rem] border border-slate-200 shadow-sm relative">
+          <button onClick={() => setMenuAbierto(!menuAbierto)} className="flex items-center gap-3 px-4 py-2 hover:bg-slate-50 rounded-[0.4rem] transition-all group">
+            <Menu size={20} className={menuAbierto ? 'text-red-600' : 'text-slate-400 group-hover:text-slate-900'} />
+            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600">Explorar Módulos</span>
+          </button>
+          
+          {menuAbierto && (
+            <>
+              <div className="fixed inset-0 z-[10]" onClick={() => setMenuAbierto(false)} />
+              <div className="absolute top-full left-0 mt-2 w-72 bg-white border border-slate-200 rounded-[0.5rem] shadow-2xl z-[11] overflow-hidden">
+                {menuEstructura.map((cat) => (
+                  <div key={cat.id} className="border-b border-slate-50 last:border-0">
+                    <button onClick={() => setCatExpandida(catExpandida === cat.id ? null : cat.id)} className="w-full flex justify-between items-center px-6 py-4 text-[11px] font-black uppercase text-slate-800 hover:bg-slate-50">
+                      {cat.label} <span className={`transition-transform ${catExpandida === cat.id ? 'rotate-90' : ''}`}>›</span>
+                    </button>
+                    {catExpandida === cat.id && (
+                      <div className="bg-slate-50 pb-2">
+                        {cat.sub.map((s, idx) => (
+                          <button key={idx} onClick={() => { navigate(s.p); setMenuAbierto(false); }} className="w-full text-left px-10 py-3 text-[9px] font-bold uppercase text-slate-500 hover:text-red-600 transition-colors">
+                            • {s.l}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+          <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest uppercase">Admin Cloud Onesta</span>
+        </div>
+
+        {/* Los 6 Gráficos Impactantes */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {métricas.map((m, i) => (
+            <div key={i} className="bg-white p-8 rounded-[0.5rem] border border-slate-200 group transition-all">
+              <m.icon size={28} strokeWidth={1.5} className="text-slate-400 mb-6" />
+              <p className="text-slate-400 text-[10px] font-black uppercase mb-1">{m.label}</p>
+              <p className="text-4xl font-black text-slate-900">{m.val}</p>
+            </div>
+          ))}
+
+          <div className="md:col-span-2 bg-white p-8 rounded-[0.5rem] border border-slate-200 h-80 flex flex-col">
+            <h3 className="font-black text-slate-800 uppercase text-[11px] mb-10 tracking-widest">Actividad Operativa Anual</h3>
+            <div className="flex-1 flex items-end justify-between gap-3 px-4">
+              {[30, 60, 45, 90, 100, 70, 85, 40, 75, 50, 95, 60].map((h, i) => (
+                <div key={i} className="flex-1 bg-slate-100 hover:bg-slate-900 transition-all rounded-t-sm" style={{height: `${h}%`}} />
+              ))}
+            </div>
+          </div>
+
+          <div className="bg-white p-8 rounded-[0.5rem] border border-slate-200 h-80">
+            <h3 className="font-black text-slate-800 uppercase text-[11px] mb-8 tracking-widest">Distribución de Ramo</h3>
+            <div className="space-y-6">
+              {[ {l:'Autos', p:'85%'}, {l:'Salud', p:'40%'}, {l:'Finanzas', p:'65%'}, {l:'Daños', p:'20%'} ].map((d, i) => (
+                <div key={i} className="space-y-2">
+                  <div className="flex justify-between text-[10px] font-black text-slate-500 uppercase"><span>{d.l}</span><span>{d.p}</span></div>
+                  <div className="h-1 bg-slate-100 rounded-full"><div className="h-full bg-slate-900 rounded-full" style={{width: d.p}} /></div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {[ {t:'Siniestros', v:'128', c:'bg-slate-900'}, {t:'Revisiones', v:'42', c:'bg-slate-400'}, {t:'Finalizados', v:'912', c:'bg-slate-200'} ].map((g, i) => (
+            <div key={i} className="bg-white p-8 rounded-[0.5rem] border border-slate-200 flex flex-col justify-between">
+              <div className={`w-3 h-3 rounded-full ${g.c}`} />
+              <div><p className="text-[9px] font-black text-slate-400 uppercase mb-1">{g.t}</p><p className="text-2xl font-black text-slate-900">{g.v}</p></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </PageLayout>
+  );
+};
 
 // Página de flotilla: cotizador paso a paso, vehículos asegurados y chat de ayuda
 const FlotillaPage = () => {
@@ -614,6 +774,21 @@ export default function App() {
         <Route path="/"                element={<LandingPage />} />
         <Route path="/dashboard"       element={<Dashboard />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
+
+        {/* Rutas de Módulos Administrativos Nuevos */}
+        <Route path="/admin/autos-adm"   element={<AdminModuleMaster nombre="Administración Oficial" icono={FileText} />} />
+        <Route path="/admin/autos-renov"  element={<AdminModuleMaster nombre="Renovación Flotilla"   icono={RefreshCw} />} />
+        <Route path="/admin/danos-emp"   element={<AdminModuleMaster nombre="Portal Empresarial"    icono={Car} />} />
+        <Route path="/admin/danos-cond"  element={<AdminModuleMaster nombre="Portal Condominios"    icono={Users} />} />
+        <Route path="/admin/salud-adm"   element={<AdminModuleMaster nombre="Admin Póliza GMM"      icono={Stethoscope} />} />
+        <Route path="/admin/salud-sin"   element={<AdminModuleMaster nombre="Trámites Siniestros"   icono={ClipboardList} />} />
+        <Route path="/admin/salud-mov"   element={<AdminModuleMaster nombre="Trámites Altas/Bajas"  icono={Users} />} />
+        <Route path="/admin/salud-rep"   element={<AdminModuleMaster nombre="Siniestralidad GMM"    icono={TrendingUp} />} />
+        <Route path="/admin/fin-prov"    element={<AdminModuleMaster nombre="Proveedores"           icono={User} />} />
+        <Route path="/admin/fin-cont"    element={<AdminModuleMaster nombre="Contratistas"         icono={Users} />} />
+
+
+        {/* Rutas Cliente */}
         <Route path="/flotilla"        element={<FlotillaPage />} />
         <Route path="/gastos-medicos"  element={<GenericSection name="Gastos Médicos"         icon={Stethoscope} />} />
         <Route path="/renovacion"      element={<GenericSection name="Renovación"             icon={RefreshCw}   />} />
