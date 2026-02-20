@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/Onesta_one/static/css/main.e33b2ccb.css",
-    "main.js": "/Onesta_one/static/js/main.c872ed86.js",
+    "main.js": "/Onesta_one/static/js/main.a1526487.js",
     "static/js/453.bd6a2c90.chunk.js": "/Onesta_one/static/js/453.bd6a2c90.chunk.js",
     "index.html": "/Onesta_one/index.html",
     "main.e33b2ccb.css.map": "/Onesta_one/static/css/main.e33b2ccb.css.map",
-    "main.c872ed86.js.map": "/Onesta_one/static/js/main.c872ed86.js.map",
+    "main.a1526487.js.map": "/Onesta_one/static/js/main.a1526487.js.map",
     "453.bd6a2c90.chunk.js.map": "/Onesta_one/static/js/453.bd6a2c90.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.e33b2ccb.css",
-    "static/js/main.c872ed86.js"
+    "static/js/main.a1526487.js"
   ]
 }
