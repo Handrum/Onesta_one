@@ -3,10 +3,73 @@ import { HashRouter as Router, Routes, Route, useNavigate, Link, Navigate } from
 import {
   ArrowLeft, Car,
   Stethoscope, RefreshCw, User, Phone, Star,
-  Download, CheckCircle2, Users, TrendingUp, LayoutDashboard, ClipboardList, Send, Menu, MessageCircle, X
+  Download, CheckCircle2, Users, TrendingUp, LayoutDashboard, ClipboardList, Send, Menu, MessageCircle, X,
+  MoreVertical, FileText, Share2, Eye, Printer
 } from 'lucide-react';
 
-// --- 1. ESTRUCTURA BASE DE LA PÁGINA ---
+// Menú de opciones que aparece al tocar los tres puntos de cada vehículo.
+// Vive fuera de los demás componentes para que no se reinicie al hacer clic.
+const MenuUnidadPopup = ({ unidad, menuAbierto, setMenuAbierto }) => {
+  const estaAbierto = menuAbierto === unidad.id;
+  const btnRef = React.useRef(null);
+  const [pos, setPos] = React.useState({ top: 0, left: 0 });
+
+  const opciones = [
+    { icon: FileText, label: 'Descargar PDF', color: 'text-slate-700' },
+    { icon: Eye,      label: 'Ver póliza',    color: 'text-slate-700' },
+    { icon: Printer,  label: 'Imprimir',      color: 'text-slate-700' },
+    { icon: Share2,   label: 'Compartir',     color: 'text-blue-600'  },
+  ];
+
+  const handleClick = (e) => {
+    e.stopPropagation();
+    if (!estaAbierto && btnRef.current) {
+      // Calcula dónde colocar el menú según la posición del botón en pantalla
+      const rect = btnRef.current.getBoundingClientRect();
+      setPos({ top: rect.top - 130, left: rect.right + 2 });
+    }
+    setMenuAbierto(estaAbierto ? null : unidad.id);
+  };
+
+  return (
+    <div className="relative flex-shrink-0">
+      <button
+        ref={btnRef}
+        onClick={handleClick}
+        className={`p-2 rounded-[0.4rem] transition-all ${estaAbierto ? 'bg-slate-100 text-slate-700' : 'text-slate-300 hover:text-slate-600 hover:bg-slate-50'}`}
+      >
+        <MoreVertical size={16} />
+      </button>
+      {estaAbierto && (
+        <>
+          {/* Área invisible que cierra el menú si el usuario hace clic fuera */}
+          <div className="fixed inset-0 z-[998]" onClick={() => setMenuAbierto(null)} />
+          {/* El menú usa posición fija para que nunca quede cortado por otros elementos */}
+          <div
+            className="fixed z-[999] bg-white border border-slate-100 rounded-[0.6rem] shadow-xl shadow-slate-200/60 w-44 overflow-hidden"
+            style={{ top: pos.top, left: pos.left }}
+          >
+            <div className="px-4 py-2.5 border-b border-slate-100 bg-slate-50">
+              <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest truncate">{unidad.modelo}</p>
+            </div>
+            {opciones.map((op, i) => (
+              <button
+                key={i}
+                onClick={() => setMenuAbierto(null)}
+                className="w-full flex items-center gap-3 px-4 py-3 hover:bg-slate-50 transition-colors"
+              >
+                <op.icon size={14} className={`${op.color} flex-shrink-0`} />
+                <span className={`text-[11px] font-black uppercase tracking-tight ${op.color}`}>{op.label}</span>
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
+
+// Estructura compartida por todas las páginas: fondo, barra de navegación y área de contenido
 const PageLayout = ({ children, title, showNav = true }) => (
   <div className="min-h-screen bg-[#F8FAFC] font-['Manrope']">
     {showNav && (
@@ -17,11 +80,7 @@ const PageLayout = ({ children, title, showNav = true }) => (
         <div className="flex items-center gap-10">
           <div className="flex items-center gap-3">
             <Link to="/" className="bg-white p-1 rounded-[0.5rem] border-slate-100 block">
-              <img
-                src={process.env.PUBLIC_URL + '/Logo_Onesta.png'}
-                alt="Logo Empresa"
-                className="h-10 w-auto object-contain"
-              />
+              <img src={process.env.PUBLIC_URL + '/Logo_Onesta.png'} alt="Logo Empresa" className="h-10 w-auto object-contain" />
             </Link>
           </div>
           <div className="hidden md:flex gap-8 text-[11px] font-black uppercase tracking-[0.15em] text-slate-600">
@@ -46,18 +105,18 @@ const PageLayout = ({ children, title, showNav = true }) => (
   </div>
 );
 
-// --- 2. LANDING / LOGIN ---
+// Pantalla de inicio con el formulario para entrar.
+// En móvil muestra solo el logo y el login. En escritorio muestra el diseño completo.
 const LandingPage = () => {
   const [role, setRole] = useState('user');
   const navigate = useNavigate();
-
   const handleLogin = (e) => {
     e.preventDefault();
     role === 'admin' ? navigate('/admin-dashboard') : navigate('/dashboard');
   };
-
   return (
     <div className="min-h-screen bg-[#F8FAFC] font-['Manrope']">
+      {/* Barra de navegación — solo se muestra en pantallas grandes */}
       <nav className="hidden md:flex relative z-[100] w-full max-w-7xl mx-auto px-6 py-6 mt-4 overflow-hidden justify-between items-center shadow-2xl shadow-slate-200/50 rounded-[0.5rem] bg-white">
         <div className="absolute inset-0 z-[-1]">
           <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/80 to-transparent"></div>
@@ -73,9 +132,8 @@ const LandingPage = () => {
           </div>
         </div>
       </nav>
-
       <main className="max-w-7xl mx-auto px-6 py-12">
-        {/* MÓVIL */}
+        {/* Vista móvil: logo arriba y formulario centrado */}
         <div className="flex md:hidden flex-col items-center justify-center min-h-[85vh] gap-8">
           <img src={process.env.PUBLIC_URL + '/Logo_Onesta.png'} alt="Onesta One" className="w-[220px] h-auto object-contain" />
           <div className="bg-white p-8 rounded-[1rem] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.1)] border border-slate-100 w-full max-w-[380px]">
@@ -95,8 +153,7 @@ const LandingPage = () => {
           </div>
           <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest text-center pb-6">© 2026 Onesta One. <span className="font-medium normal-case opacity-60">*Sujeto a póliza colectiva.</span></p>
         </div>
-
-        {/* DESKTOP */}
+        {/* Vista escritorio: logo y texto a la izquierda, formulario a la derecha */}
         <div className="hidden md:block relative">
           <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-red-500 rounded-full opacity-5 blur-3xl -z-10"></div>
           <div className="absolute bottom-[-10%] left-[-5%] w-[400px] h-[400px] bg-teal-400 rounded-full opacity-10 blur-3xl -z-10"></div>
@@ -147,12 +204,12 @@ const LandingPage = () => {
   );
 };
 
-// --- 3. DASHBOARD ---
+// Panel del cliente con accesos directos a cada módulo y lista de pólizas activas
 const Dashboard = () => {
   const navigate = useNavigate();
   const polizas = [
-    { id: 'GM-99021', ramo: 'Gastos Médicos Mayores', status: 'Activa', color: 'text-green-600 bg-green-50 border-green-100' },
-    { id: 'FL-44012', ramo: 'Flotilla Empresarial', status: 'En Pago', color: 'text-blue-600 bg-blue-50 border-blue-100' },
+    { id: 'GM-99021', ramo: 'Gastos Médicos Mayores', status: 'Activa',   color: 'text-green-600 bg-green-50 border-green-100' },
+    { id: 'FL-44012', ramo: 'Flotilla Empresarial',   status: 'En Pago',  color: 'text-blue-600 bg-blue-50 border-blue-100'   },
   ];
   return (
     <PageLayout title="Mi Resumen">
@@ -160,11 +217,11 @@ const Dashboard = () => {
         <div className="bg-white p-8 rounded-[0.75rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 mb-8 grid grid-cols-2 md:grid-cols-6 gap-2">
           {[
             { icon: Stethoscope, label: 'Gastos Médicos', path: '/gastos-medicos' },
-            { icon: Car, label: 'Flotilla', path: '/flotilla' },
-            { icon: RefreshCw, label: 'Renovación', path: '/renovacion' },
-            { icon: User, label: 'Menores', path: '/gastos-menores' },
-            { icon: Phone, label: 'Contacto', path: '/contactos' },
-            { icon: Star, label: 'Club', path: '/club' },
+            { icon: Car,         label: 'Flotilla',        path: '/flotilla'       },
+            { icon: RefreshCw,   label: 'Renovación',      path: '/renovacion'     },
+            { icon: User,        label: 'Menores',          path: '/gastos-menores' },
+            { icon: Phone,       label: 'Contacto',         path: '/contactos'      },
+            { icon: Star,        label: 'Club',             path: '/club'           },
           ].map((item, i) => (
             <button key={i} onClick={() => navigate(item.path)} className="flex flex-col items-center gap-4 group transition-all">
               <div className="text-slate-400 group-hover:text-red-600 transition-colors"><item.icon size={32} strokeWidth={1.5} /></div>
@@ -200,14 +257,14 @@ const Dashboard = () => {
   );
 };
 
-// --- 4. ADMIN ---
+// Panel del administrador con métricas generales de la operación
 const AdminDashboard = () => (
   <PageLayout title="Consola Administrativa">
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
       {[
-        { label: 'Clientes Activos', val: '2,450', icon: Users, color: 'text-blue-600' },
-        { label: 'Primas Totales', val: '$1.2M', icon: TrendingUp, color: 'text-emerald-600' },
-        { label: 'Siniestros Hoy', val: '14', icon: ClipboardList, color: 'text-orange-600' },
+        { label: 'Clientes Activos', val: '2,450', icon: Users,        color: 'text-blue-600'    },
+        { label: 'Primas Totales',   val: '$1.2M', icon: TrendingUp,    color: 'text-emerald-600' },
+        { label: 'Siniestros Hoy',   val: '14',    icon: ClipboardList, color: 'text-orange-600'  },
       ].map((card, i) => (
         <div key={i} className="bg-white p-10 rounded-[0.5rem] border border-slate-200 shadow-sm">
           <card.icon size={28} className={`${card.color} mb-8`} />
@@ -225,17 +282,18 @@ const AdminDashboard = () => (
   </PageLayout>
 );
 
-// --- 5. FLOTILLA ---
+// Página de flotilla: cotizador paso a paso, vehículos asegurados y chat de ayuda
 const FlotillaPage = () => {
-  const [pasoActual, setPasoActual] = useState(1);
-  const [seleccion, setSeleccion] = useState({ año: '', marca: '' });
+  const [pasoActual, setPasoActual]   = useState(1);
+  const [seleccion, setSeleccion]     = useState({ año: '', marca: '' });
   const [chatAbierto, setChatAbierto] = useState(false);
+  const [menuAbierto, setMenuAbierto] = useState(null); // id del vehículo con el menú abierto
   const navigate = useNavigate();
 
   const coberturas = [
-    { v: '3%', l: 'Deducible Daños' }, { v: '10%', l: 'Deducible Robo' }, { v: '2 mil', l: 'Responsabilidad Civil' },
-    { v: '500 m', l: 'Gastos Médicos' }, { v: '3 mil', l: 'RC Exceso' }, { v: 'Cubierta 1', l: 'No Deducible' },
-    { v: 'Cubierta 2', l: 'Asistencia Vial' }, { v: 'Cubierta 3', l: 'RC Ocupantes' }, { v: 'Cubierta 4', l: 'Muerte Conductor' },
+    { v: '3%',       l: 'Deducible Daños'      }, { v: '10%',     l: 'Deducible Robo'        }, { v: '2 mil',   l: 'Responsabilidad Civil' },
+    { v: '500 m',    l: 'Gastos Médicos'        }, { v: '3 mil',   l: 'RC Exceso'             }, { v: 'Cubierta 1', l: 'No Deducible'        },
+    { v: 'Cubierta 2', l: 'Asistencia Vial'     }, { v: 'Cubierta 3', l: 'RC Ocupantes'       }, { v: 'Cubierta 4', l: 'Muerte Conductor'    },
   ];
 
   const unidades = [
@@ -243,7 +301,7 @@ const FlotillaPage = () => {
     { id: 2, modelo: 'Nissan NP300 2022', placa: 'XYZ-987', status: 'ASEGURADO' },
   ];
 
-  // Stepper compacto reutilizable
+  // Barra con los 4 pasos del cotizador
   const Stepper = () => (
     <div className="flex items-center justify-between bg-slate-50 p-4 rounded-[0.5rem] border border-slate-100 mb-6">
       {[{ n: 1, t: 'Conoce' }, { n: 2, t: 'Selecciona' }, { n: 3, t: 'Revisa' }, { n: 4, t: 'Contrata' }].map((p) => (
@@ -261,7 +319,7 @@ const FlotillaPage = () => {
     </div>
   );
 
-  // Contenido de cada paso (reutilizable en móvil y desktop)
+  // Lo que se muestra según el paso activo del cotizador
   const PasoContenido = () => (
     <>
       {pasoActual === 1 && (
@@ -314,12 +372,8 @@ const FlotillaPage = () => {
         <ArrowLeft size={16} /> VOLVER AL PANEL
       </button>
 
-      {/* ══════════════════════════════════
-          VISTA MÓVIL  (oculto en ≥lg)
-      ══════════════════════════════════ */}
+      {/* Vista en móvil: secciones apiladas una debajo de la otra */}
       <div className="lg:hidden space-y-6">
-
-        {/* 1. Cotizador */}
         <section className="bg-white rounded-[0.5rem] border border-slate-200 shadow-sm p-5">
           <div className="mb-5">
             <h2 className="text-2xl font-black text-slate-900 tracking-tighter">Cotiza aquí tu auto</h2>
@@ -336,7 +390,6 @@ const FlotillaPage = () => {
           )}
         </section>
 
-        {/* 2. Unidades aseguradas */}
         <section className="bg-white rounded-[0.5rem] border border-slate-200 shadow-sm overflow-hidden">
           <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
             <h3 className="font-black text-slate-800 uppercase text-[11px] tracking-widest">Unidades Aseguradas</h3>
@@ -354,19 +407,20 @@ const FlotillaPage = () => {
                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-tight">{u.placa}</p>
                   </div>
                 </div>
-                <span className="bg-emerald-50 text-emerald-600 text-[9px] font-black px-3 py-1 rounded-full border border-emerald-100 flex-shrink-0">● {u.status}</span>
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <span className="bg-emerald-50 text-emerald-600 text-[9px] font-black px-3 py-1 rounded-full border border-emerald-100">● {u.status}</span>
+                  <MenuUnidadPopup unidad={u} menuAbierto={menuAbierto} setMenuAbierto={setMenuAbierto} />
+                </div>
               </div>
             ))}
           </div>
         </section>
 
-        {/* Espacio para no tapar contenido con el botón flotante */}
+        {/* Espacio para que el botón del chat no tape el último elemento */}
         <div className="h-20" />
       </div>
 
-      {/* ══════════════════════════════════
-          VISTA DESKTOP  (oculto en <lg) — sin cambios
-      ══════════════════════════════════ */}
+      {/* Vista en escritorio: cotizador y vehículos a la izquierda, chat a la derecha */}
       <div className="hidden lg:grid grid-cols-12 gap-10 items-stretch">
         <div className="col-span-8 space-y-10">
           <section className="bg-white rounded-[0.5rem] border border-slate-200 shadow-sm p-12 relative flex flex-col h-[700px]">
@@ -375,7 +429,10 @@ const FlotillaPage = () => {
                 <h2 className="text-4xl font-black text-slate-900 tracking-tighter">Cotiza aquí tu auto</h2>
                 <p className="text-slate-400 text-[10px]">Conoce las coberturas incluidas en la póliza colectiva da clic sobre cada una para ver mas detalle</p>
               </div>
-              <p className="text-slate-600 px-9 py-3.5 rounded-[0.3rem] font-black text-xs uppercase tracking-widest shadow-lg shadow-red-100">Elige uno</p>
+              <div className="flex items-center gap-2 text-slate-400 bg-slate-50 border border-slate-200 px-4 py-3 rounded-[0.5rem] font-black text-[10px] uppercase tracking-widest flex-shrink-0">
+                <ClipboardList size={14} className="text-slate-300" />
+                Elige uno
+              </div>
             </div>
             <div className="w-full max-w-4xl mx-auto flex items-center justify-between mb-16 bg-slate-50 p-6 rounded-[0.5rem] border border-slate-100">
               {[{ n: 1, t: 'Conoce' }, { n: 2, t: 'Selecciona' }, { n: 3, t: 'Revisa' }, { n: 4, t: 'Contrata' }].map((p) => (
@@ -460,14 +517,17 @@ const FlotillaPage = () => {
                       <p className="text-[11px] font-black text-slate-400 uppercase tracking-tighter">{u.placa}</p>
                     </div>
                   </div>
-                  <span className="bg-emerald-50 text-emerald-600 text-[10px] font-black px-4 py-1.5 rounded-full border border-emerald-100">● {u.status}</span>
+                  <div className="flex items-center gap-3">
+                    <span className="bg-emerald-50 text-emerald-600 text-[10px] font-black px-4 py-1.5 rounded-full border border-emerald-100">● {u.status}</span>
+                    <MenuUnidadPopup unidad={u} menuAbierto={menuAbierto} setMenuAbierto={setMenuAbierto} />
+                  </div>
                 </div>
               ))}
             </div>
           </section>
         </div>
 
-        {/* Chat desktop */}
+        {/* Chat de asistencia — solo visible en escritorio */}
         <div className="col-span-4 h-full">
           <div className="bg-white rounded-[0.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-slate-200 h-[700px] flex flex-col overflow-hidden">
             <div className="bg-white p-10 border-b border-slate-100 flex flex-col items-center text-center">
@@ -489,11 +549,8 @@ const FlotillaPage = () => {
         </div>
       </div>
 
-      {/* ══════════════════════════════════
-          CHAT FLOTANTE — solo en móvil (<lg)
-      ══════════════════════════════════ */}
+      {/* Botón de chat flotante en móvil y panel que sube desde abajo al abrirse */}
       <div className="lg:hidden">
-        {/* Botón flotante */}
         <button
           onClick={() => setChatAbierto(true)}
           className="fixed bottom-6 right-6 z-50 bg-blue-600 text-white w-14 h-14 rounded-full shadow-2xl shadow-blue-200 flex items-center justify-center hover:bg-blue-700 transition-all active:scale-95"
@@ -501,21 +558,14 @@ const FlotillaPage = () => {
         >
           <MessageCircle size={24} />
         </button>
-
-        {/* Overlay */}
+        {/* Fondo oscurecido detrás del chat */}
         {chatAbierto && (
-          <div
-            className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm"
-            onClick={() => setChatAbierto(false)}
-          />
+          <div className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm" onClick={() => setChatAbierto(false)} />
         )}
-
-        {/* Panel deslizable desde abajo */}
         <div
           className={`fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-[1.2rem] shadow-2xl flex flex-col transition-transform duration-300 ease-out ${chatAbierto ? 'translate-y-0' : 'translate-y-full'}`}
           style={{ height: '75vh' }}
         >
-          {/* Handle + header */}
           <div className="flex flex-col items-center pt-3 pb-4 border-b border-slate-100 px-5">
             <div className="w-10 h-1 bg-slate-200 rounded-full mb-4" />
             <div className="w-full flex justify-between items-center">
@@ -525,16 +575,12 @@ const FlotillaPage = () => {
               </button>
             </div>
           </div>
-
-          {/* Mensajes */}
           <div className="flex-1 bg-slate-50/30 p-5 space-y-4 overflow-y-auto">
             <div className="bg-white p-4 rounded-[0.5rem] rounded-tl-none border border-slate-100 shadow-sm text-sm text-slate-700 font-semibold">¡Hola! Soy tu asistente.</div>
             {['¿Cómo reporto un choque?', '¿Qué cubre el 3%?'].map(q => (
               <button key={q} className="w-full text-left p-4 bg-white border border-slate-200 rounded-[0.5rem] text-[10px] font-black text-blue-600 uppercase tracking-tight hover:border-blue-600 transition-all">{q}</button>
             ))}
           </div>
-
-          {/* Input */}
           <div className="p-4 bg-white border-t border-slate-100 flex gap-3">
             <input type="text" placeholder="Cómo te podemos ayudar...?" className="flex-1 bg-slate-50 p-4 rounded-[0.5rem] text-sm font-bold outline-none border border-slate-100 focus:bg-white focus:border-red-600 transition-all" />
             <button className="bg-blue-600 text-white p-4 rounded-[0.5rem] font-black shadow-lg shadow-blue-100"><Send size={18} /></button>
@@ -546,6 +592,7 @@ const FlotillaPage = () => {
   );
 };
 
+// Pantalla de relleno para módulos que todavía no están listos
 const GenericSection = ({ name, icon: Icon }) => (
   <PageLayout title={name}>
     <button onClick={() => window.history.back()} className="flex items-center gap-2 text-red-600 font-black mb-10 text-[11px] uppercase tracking-widest">
@@ -559,20 +606,21 @@ const GenericSection = ({ name, icon: Icon }) => (
   </PageLayout>
 );
 
+// Rutas de la app: cada URL lleva a su pantalla correspondiente
 export default function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/"                element={<LandingPage />} />
+        <Route path="/dashboard"       element={<Dashboard />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
-        <Route path="/flotilla" element={<FlotillaPage />} />
-        <Route path="/gastos-medicos" element={<GenericSection name="Gastos Médicos" icon={Stethoscope} />} />
-        <Route path="/renovacion" element={<GenericSection name="Renovación" icon={RefreshCw} />} />
-        <Route path="/gastos-menores" element={<GenericSection name="Gastos Médicos Menores" icon={User} />} />
-        <Route path="/contactos" element={<GenericSection name="Contactos" icon={Phone} />} />
-        <Route path="/club" element={<GenericSection name="Club Onesta" icon={Star} />} />
-        <Route path="*" element={<Navigate to="/" />} />
+        <Route path="/flotilla"        element={<FlotillaPage />} />
+        <Route path="/gastos-medicos"  element={<GenericSection name="Gastos Médicos"         icon={Stethoscope} />} />
+        <Route path="/renovacion"      element={<GenericSection name="Renovación"             icon={RefreshCw}   />} />
+        <Route path="/gastos-menores"  element={<GenericSection name="Gastos Médicos Menores" icon={User}        />} />
+        <Route path="/contactos"       element={<GenericSection name="Contactos"              icon={Phone}       />} />
+        <Route path="/club"            element={<GenericSection name="Club Onesta"            icon={Star}        />} />
+        <Route path="*"                element={<Navigate to="/" />} />
       </Routes>
     </Router>
   );
